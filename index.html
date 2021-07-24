@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="css/root.css">
+    <script type="text/javascript" src="./jquery-3.6.0.js"></script>
+    <script type="text/javascript" src="./jquery.mousewheel.js"></script>
+    <script type="text/javascript">
+        $(function () {
+
+            // 定义当前应该切换到哪一个页面
+            var $nowIndex = 0;
+            var $len = $('.page').length;
+            var $height = $(window).height();
+
+            // 定义高度
+            $('.pages_warper').css({ 'height': $height - 1 });
+            $('.pages_warper_inner').css({ 'height': $height * $len });
+            $('.pages_warper_inner .page').css({ 'height': $height });
+
+            // 用于函数节流：降低滚动触发修改$nowIndex的频率
+            var timer = null
+
+            // 初始化第一页的动画效果
+            $(".pages_warper_inner .page").animate({
+                'opacity': 1
+            }, 1000)
+
+            $(".pages_warper_inner .warper1 .left").animate({
+                'margin-left': '10%',
+            }, 1000)
+
+            $(".pages_warper_inner .warper1 .right p").animate({
+                'margin-left': '10%',
+            }, 1000)
+
+            // 事件委托，监听li点击事件，切换对应的page
+            $('ul').delegate("li", "click", function () {
+
+                $(this).addClass('active').siblings().removeClass('active');
+
+                $nowIndex = $(this).index();
+
+                // 滚动向上向下的动画效果
+                $(".pages_warper_inner").animate({
+                    'margin-top': -$height * $nowIndex,
+                }, 1000, 'swing');
+
+                pages_toggle(); // 切换page动画
+            })
+
+            $(window).mousewheel(function (event) {
+
+                clearTimeout(timer);
+
+                timer = setTimeout(function () {
+                    // 滚轮向上：event.deltaY = 1
+                    // 滚轮向下：event.deltaY = -1
+                    $nowIndex = $nowIndex - event.deltaY;
+
+                    console.log($nowIndex);
+
+                    // 一共只有5个页面，所以需要限制一下nowIndex 0 - 4
+                    if ($nowIndex < 0) {
+                        $nowIndex = 0;
+                    }
+
+                    if ($nowIndex > ($len - 1)) {
+                        $nowIndex = ($len - 1);
+                    }
+
+                    // 滚动向上向下的动画效果
+                    $(".pages_warper_inner").animate({
+                        'margin-top': -$height * $nowIndex,
+                    }, 1000, 'swing');
+
+                    // 设置ul的active属性
+                    // alert($("ul li").length);
+                    $("ul li").eq($nowIndex).addClass('active').siblings().removeClass('active');
+
+                    pages_toggle(); // 执行切换page动画
+
+                }, 500)
+            });
+
+            // 切换page动画的方法
+            function pages_toggle() {
+                switch ($nowIndex) {
+                    case 0: // page 1 的动画
+                        $(".pages_warper_inner .warper1 .left").css({
+                            'margin-left': 0,
+                            'opacity': 0
+                        });
+                        $(".pages_warper_inner .warper1 .left").animate({
+                            'margin-left': '10%',
+                            'opacity': 1
+                        }, 2000)
+
+
+                        $(".pages_warper_inner .warper1 .right p").css({
+                            'margin-left': '50%',
+                            'opacity': 0
+                        })
+                        $(".pages_warper_inner .warper1 .right p").animate({
+                            'margin-left': '10%',
+                            'opacity': 1
+                        }, 2000)
+                        break;
+                    case 1: // page 2 的动画
+                        $(".pages_warper_inner .warper2 .left").css({
+                            'margin-left': '0',
+                            'opacity': 0
+                        })
+                        $(".pages_warper_inner .warper2 .left").animate({
+                            'margin-left': '5%',
+                            'opacity': 1
+                        }, 2000)
+
+
+                        $(".pages_warper_inner .warper2 .right").css({
+                            'margin-right': '-50%',
+                            'opacity': 0
+                        })
+                        $(".pages_warper_inner .warper2 .right").animate({
+                            'margin-right': 0,
+                            'opacity': 1
+                        }, 2000)
+
+                        break;
+                    case 2: // page 3 的动画
+                        $(".pages_warper_inner .warper3 .left").css({
+                            'margin-left': 0,
+                            'opacity': 0
+                        });
+                        $(".pages_warper_inner .warper3 .left").animate({
+                            'margin-left': '20%',
+                            'opacity': 1
+                        }, 2000)
+
+
+                        $(".pages_warper_inner .warper3 .right p").css({
+                            'margin-left': '50%',
+                            'opacity': 0
+                        })
+                        $(".pages_warper_inner .warper3 .right p").animate({
+                            'margin-left': '10%',
+                            'opacity': 1
+                        }, 2000)
+                        break;
+                    case 3: // page 4 的动画
+                        $(".pages_warper_inner .warper4 .left").css({
+                            'margin-left': 0,
+                            'opacity': 0
+                        });
+                        $(".pages_warper_inner .warper4 .left").animate({
+                            'margin-left': '10%',
+                            'opacity': 1
+                        }, 2000)
+
+
+                        $(".pages_warper_inner .warper4 .right p").css({
+                            'margin-left': '50%',
+                            'opacity': 0
+                        })
+                        $(".pages_warper_inner .warper4 .right p").animate({
+                            'margin-left': '10%',
+                            'opacity': 1
+                        }, 2000)
+                        break;
+                    case 4: // page 5 的动画
+                        $(".pages_warper_inner .warper5 .center").css({
+                            'transform': "rotateZ(0deg)",
+                        });
+                        $(".pages_warper_inner .warper5 .center").css({
+                            'transform': "rotateZ(360deg)",
+                        });
+                        break;
+                }
+            }
+
+        })
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        .pages_warper {
+            width: 100%;
+            background-color: gold;
+            overflow: hidden;
+            font-size: 14px;
+            font-family: "Microsoft Yahei";
+        }
+
+        .pages_warper_inner {
+            /*position: absolute;*/
+            /*top: 0;*/
+            background-color: cyan;
+            margin-top: 0;
+        }
+
+        .pages_warper_inner .warper1 {
+            background-color: orange;
+        }
+
+        .pages_warper_inner .warper2 {
+            background-color: lightgreen;
+        }
+
+        .pages_warper_inner .warper3 {
+            background-color: cyan;
+        }
+
+        .pages_warper_inner .warper4 {
+            background-color: pink;
+        }
+
+        .pages_warper_inner .warper5 {
+            background-color: lightblue;
+        }
+
+        .pages_warper_inner .page {
+            position: relative;
+            opacity: 0;
+        }
+
+        .pages_warper_inner .page .left {
+            width: 50%;
+            height: 100%;
+            position: absolute;
+        }
+
+        .pages_warper_inner .page .right {
+            width: 50%;
+            height: 100%;
+            position: absolute;
+            right: 0;
+        }
+
+        .pages_warper_inner .warper1 .left {
+            background: url("../images/001.png") left no-repeat;
+        }
+
+        .pages_warper_inner .warper1 .right p {
+            margin-top: 30%;
+            margin-left: 50%;
+            width: 70%;
+            text-indent: 28px;
+            line-height: 40px;
+        }
+
+        .pages_warper_inner .warper2 .left p {
+            margin-top: 30%;
+            margin-right: 50%;
+            width: 70%;
+            text-indent: 28px;
+            line-height: 40px;
+        }
+
+        .pages_warper_inner .warper2 .right {
+            background: url("../images/002.png") left no-repeat;
+        }
+
+        .pages_warper_inner .warper3 .left {
+            background: url("../images/003.png") left no-repeat;
+        }
+
+        .pages_warper_inner .warper3 .right p {
+            margin-top: 30%;
+            margin-left: 50%;
+            width: 70%;
+            text-indent: 28px;
+            line-height: 40px;
+        }
+
+        .pages_warper_inner .warper4 .left {
+            background: url("../images/004.png") left no-repeat;
+        }
+
+        .pages_warper_inner .warper4 .right p {
+            margin-top: 30%;
+            margin-left: 50%;
+            width: 70%;
+            text-indent: 28px;
+            line-height: 40px;
+        }
+
+        .pages_warper_inner .warper5 .center {
+            height: 100%;
+            background: url("../images/005.png") center no-repeat;
+            transform: rotateZ(0deg);
+            transition: all 3s ease;
+        }
+
+        /*ul li 样式*/
+        ul {
+            position: fixed;
+            top: 35%;
+            right: 3%;
+            list-style: none;
+        }
+
+        ul li {
+            width: 18px;
+            height: 18px;
+            border: 1px solid #666;
+            border-radius: 100%;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        ul .active {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="pages_warper">
+        <div class="pages_warper_inner">
+            <div class="warper1 page">
+                <div class="left"></div>
+                <div class="right">
+                    <p>
+                        Web前端开发是从网页制作演变而来的，名称上有很明显的时代特征。在互联网的演化进程中，网页制作是Web1.0时代的产物，那时网站的主要内容都是静态的，用户使用网站的行为也以浏览为主。
+                    </p>
+                </div>
+            </div>
+            <div class="warper2 page">
+                <div class="left">
+                    <p>
+                        2005年以后，互联网进入Web2.0时代，各种类似桌面软件的Web应用大量涌现，网站的前端由此发生了翻天覆地的变化。网页不再只是承载单一的文字和图片，各种富媒体让网页的内容更加生动，网页上软件化的交互形式为用户提供了更好的使用体验，这些都是基于前端技术实现的。
+                    </p>
+                </div>
+                <div class="right">
+                </div>
+            </div>
+            <div class="warper3 page">
+                <div class="left"></div>
+                <div class="right">
+                    <p>
+                        以前会Photoshop和Dreamweaver就可以制作网页，现在只掌握这些已经远远不够了。无论是开发难度上，还是开发方式上，现在的网页制作都更接近传统的网站后台开发，所以现在不再叫网页制作，而是叫Web前端开发。
+                    </p>
+                </div>
+            </div>
+            <div class="warper4 page">
+                <div class="left"></div>
+                <div class="right">
+                    <p>
+                        Web前端开发在产品开发环节中的作用变得越来越重要，而且需要专业的前端工程师才能做好，这方面的专业人才近几年来备受青睐。Web前端开发是一项很特殊的工作，涵盖的知识面非常广，既有具体的技术，又有抽象的理念。简单地说，它的主要职能就是把网站的界面更好地呈现给用户。
+                    </p>
+                </div>
+            </div>
+            <div class="warper5 page">
+                <div class="center"></div>
+            </div>
+        </div>
+    </div>
+
+    <ul>
+        <li class="active"></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</body>
+
+</html>
